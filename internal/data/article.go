@@ -25,7 +25,7 @@ func NewArticleRepo(data *Data, logger log.Logger) biz.ArticleRepo {
 	}
 }
 
-func (ar *articleRepo) ListArticle(ctx context.Context, req *pb.ListArticleRequest) ([]*biz.Article, error) {
+func (ar *articleRepo) ListArticle(ctx context.Context, req *pb.ListArticleRequest) (rv []*biz.Article, err error) {
 	ps, err := ar.data.db.Article.
 		Query().
 		Limit(int(req.Limit)).
@@ -34,7 +34,6 @@ func (ar *articleRepo) ListArticle(ctx context.Context, req *pb.ListArticleReque
 	if err != nil {
 		return nil, err
 	}
-	rv := make([]*biz.Article, 0)
 	for _, p := range ps {
 		rv = append(rv, &biz.Article{
 			Id:        p.ID,
@@ -47,7 +46,7 @@ func (ar *articleRepo) ListArticle(ctx context.Context, req *pb.ListArticleReque
 	return rv, nil
 }
 
-func (ar *articleRepo) GetArticle(ctx context.Context, id int64) (*biz.Article, error) {
+func (ar *articleRepo) GetArticle(ctx context.Context, id int64) (rv *biz.Article, err error) {
 	p, err := ar.data.db.Article.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -61,8 +60,8 @@ func (ar *articleRepo) GetArticle(ctx context.Context, id int64) (*biz.Article, 
 	}, nil
 }
 
-func (ar *articleRepo) CreateArticle(ctx context.Context, article *biz.Article) error {
-	_, err := ar.data.db.Article.
+func (ar *articleRepo) CreateArticle(ctx context.Context, article *biz.Article) (err error) {
+	_, err = ar.data.db.Article.
 		Create().
 		SetTitle(article.Title).
 		SetContent(article.Content).

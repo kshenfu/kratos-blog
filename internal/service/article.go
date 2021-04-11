@@ -29,7 +29,13 @@ func NewArticleService(article *biz.ArticleUsecase, logger log.Logger) *ArticleS
 
 func (s *ArticleService) CreateArticle(ctx context.Context, req *pb.CreateArticleRequest) (*pb.CreateArticleReply, error) {
 	s.log.Infof("input data %v", req)
-	err := s.article.Create(ctx, &biz.Article{
+
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.article.Create(ctx, &biz.Article{
 		Title:   req.Title,
 		Content: req.Content,
 	})
@@ -38,7 +44,13 @@ func (s *ArticleService) CreateArticle(ctx context.Context, req *pb.CreateArticl
 
 func (s *ArticleService) UpdateArticle(ctx context.Context, req *pb.UpdateArticleRequest) (*pb.UpdateArticleReply, error) {
 	s.log.Infof("input data %v", req)
-	err := s.article.Update(ctx, req.Id, &biz.Article{
+
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.article.Update(ctx, req.Id, &biz.Article{
 		Title:   req.Title,
 		Content: req.Content,
 	})
@@ -47,7 +59,13 @@ func (s *ArticleService) UpdateArticle(ctx context.Context, req *pb.UpdateArticl
 
 func (s *ArticleService) DeleteArticle(ctx context.Context, req *pb.DeleteArticleRequest) (*pb.DeleteArticleReply, error) {
 	s.log.Infof("input data %v", req)
-	err := s.article.Delete(ctx, req.Id)
+
+	err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.article.Delete(ctx, req.Id)
 	return &pb.DeleteArticleReply{}, err
 }
 
