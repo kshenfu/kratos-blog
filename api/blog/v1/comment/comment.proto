@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package api.blog.v1;
+
+option go_package = "blog/api/blog/v1/comment;v1";
+option java_multiple_files = true;
+option java_package = "api.blog.v1";
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+service CommentService {
+  //创建评论
+  rpc CreateComment (CreateCommentRequest) returns (CreateCommentReply) {
+    option (google.api.http) = {
+      post: "/v1/comment"
+      body: "*"
+    };
+  }
+  //更新评论
+  rpc UpdateComment (UpdateCommentRequest) returns (UpdateCommentReply) {
+    option (google.api.http) = {
+      put: "/v1/comment/{id}"
+      body: "*"
+    };
+  }
+  //删除评论
+  rpc DeleteComment (DeleteCommentRequest) returns (DeleteCommentReply) {
+    option (google.api.http) = {
+      delete: "/v1/comment/{id}"
+    };
+  }
+  //获取评论
+  rpc GetComment (GetCommentRequest) returns (GetCommentReply) {
+    option (google.api.http) = {
+      get: "/v1/comment/{id}"
+    };
+  }
+  //列举评论
+  rpc ListComment (ListCommentRequest) returns (ListCommentReply) {
+    option (google.api.http) = {
+      get: "/v1/comment"
+    };
+  }
+}
+
+message Comment {
+  //评论id
+  int64 id = 1;
+  //评论者
+  string name = 2 [(validate.rules).string = {min_len: 2, max_len: 10}];
+  //评论内容
+  string content = 3;
+  int64 like = 4;
+}
+
+message CreateCommentRequest {
+  //评论者
+  string name = 1 [(validate.rules).string = {min_len: 2, max_len: 10}];
+  //评论内容
+  string content = 2;
+}
+
+message CreateCommentReply {
+  Comment Comment = 1;
+}
+
+message UpdateCommentRequest {
+  //评论id
+  int64 id = 1;
+  //评论内容
+  string content = 2;
+}
+
+message UpdateCommentReply {
+  Comment Comment = 1;
+}
+
+message DeleteCommentRequest {
+  //评论id
+  int64 id = 1;
+}
+message DeleteCommentReply {
+}
+
+message GetCommentRequest {
+  //评论id
+  int64 id = 1;
+}
+
+message GetCommentReply {
+  Comment Comment = 1;
+}
+
+message ListCommentRequest {
+  //每页数据量
+  int64 limit = 1;
+  //偏移量
+  int64 offset = 2;
+}
+
+message ListCommentReply {
+  repeated Comment results = 1;
+}

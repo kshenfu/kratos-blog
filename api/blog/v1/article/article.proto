@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package api.blog.v1;
+
+option go_package = "blog/api/blog/v1/article;v1";
+option java_multiple_files = true;
+option java_package = "api.blog.v1";
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+service ArticleService {
+  //创建文章
+  rpc CreateArticle (CreateArticleRequest) returns (CreateArticleReply) {
+    option (google.api.http) = {
+      post: "/v1/article"
+      body: "*"
+    };
+  }
+  //更新文章
+  rpc UpdateArticle (UpdateArticleRequest) returns (UpdateArticleReply) {
+    option (google.api.http) = {
+      put: "/v1/article/{id}"
+      body: "*"
+    };
+  }
+  //删除文章
+  rpc DeleteArticle (DeleteArticleRequest) returns (DeleteArticleReply) {
+    option (google.api.http) = {
+      delete: "/v1/article/{id}"
+    };
+  }
+  //获取文章
+  rpc GetArticle (GetArticleRequest) returns (GetArticleReply) {
+    option (google.api.http) = {
+      get: "/v1/article/{id}"
+    };
+  }
+  //列举文章
+  rpc ListArticle (ListArticleRequest) returns (ListArticleReply) {
+    option (google.api.http) = {
+      get: "/v1/article"
+    };
+  }
+}
+
+message Article {
+  //文章id
+  int64 id = 1;
+  //文章标题
+  string title = 2 [(validate.rules).string = {min_len: 2, max_len: 10}];
+  //文章内容
+  string content = 3;
+  int64 like = 4;
+}
+
+message CreateArticleRequest {
+  //文章标题
+  string title = 1 [(validate.rules).string = {min_len: 2, max_len: 10}];
+  //文章内容
+  string content = 2;
+}
+
+message CreateArticleReply {
+  Article Article = 1;
+}
+
+message UpdateArticleRequest {
+  //文章id
+  int64 id = 1;
+  //文章标题
+  string title = 2 [(validate.rules).string = {min_len: 2, max_len: 10}];
+  //文章内容
+  string content = 3;
+}
+
+message UpdateArticleReply {
+  Article Article = 1;
+}
+
+message DeleteArticleRequest {
+  //文章id
+  int64 id = 1;
+}
+message DeleteArticleReply {
+}
+
+message GetArticleRequest {
+  //文章id
+  int64 id = 1;
+}
+
+message GetArticleReply {
+  Article Article = 1;
+}
+
+message ListArticleRequest {
+  //每页数据量
+  int64 limit = 1;
+  //偏移量
+  int64 offset = 2;
+}
+
+message ListArticleReply {
+  repeated Article results = 1;
+}
