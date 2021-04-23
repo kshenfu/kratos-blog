@@ -21,7 +21,7 @@ init:
 	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	go get -u github.com/envoyproxy/protoc-gen-validate
 	go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-	go get -u entgo.io/ent
+	go get -u entgo.io/ent/cmd/ent
 	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/google/wire/cmd/wire
 
