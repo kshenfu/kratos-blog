@@ -21,7 +21,7 @@ type articleRepo struct {
 func NewArticleRepo(data *Data, logger log.Logger) biz.ArticleRepo {
 	return &articleRepo{
 		data: data,
-		log:  log.NewHelper("article_repo", logger),
+		log:  log.NewHelper(log.With(logger, "model", "data/article")),
 	}
 }
 

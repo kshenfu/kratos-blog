@@ -23,14 +23,14 @@ type CommentService struct {
 func NewCommentService(comment *biz.CommentUsecase, logger log.Logger) *CommentService {
 	return &CommentService{
 		comment: comment,
-		log:     log.NewHelper("comment", logger),
+		log:     log.NewHelper(log.With(logger, "model", "data/comment")),
 	}
 }
 
 func (s *CommentService) CreateComment(ctx context.Context, req *pb.CreateCommentRequest) (*pb.CreateCommentReply, error) {
 	s.log.Infof("input data %v", req)
 	err := s.comment.Create(ctx, &biz.Comment{
-		Name:   req.Name,
+		Name:    req.Name,
 		Content: req.Content,
 	})
 	return &pb.CreateCommentReply{}, err
@@ -67,7 +67,7 @@ func (s *CommentService) ListComment(ctx context.Context, req *pb.ListCommentReq
 	for _, p := range ps {
 		reply.Results = append(reply.Results, &pb.Comment{
 			Id:      p.Id,
-			Name:   p.Name,
+			Name:    p.Name,
 			Content: p.Content,
 		})
 	}

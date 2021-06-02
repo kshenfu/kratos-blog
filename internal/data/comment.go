@@ -20,7 +20,7 @@ type commentRepo struct {
 func NewCommentRepo(data *Data, logger log.Logger) biz.CommentRepo {
 	return &commentRepo{
 		data: data,
-		log:  log.NewHelper("comment_repo", logger),
+		log:  log.NewHelper(log.With(logger, "model", "data/comment")),
 	}
 }
 

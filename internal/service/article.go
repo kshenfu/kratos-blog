@@ -23,7 +23,7 @@ type ArticleService struct {
 func NewArticleService(article *biz.ArticleUsecase, logger log.Logger) *ArticleService {
 	return &ArticleService{
 		article: article,
-		log:     log.NewHelper("article", logger),
+		log:     log.NewHelper(log.With(logger, "model", "service/article")),
 	}
 }
 
