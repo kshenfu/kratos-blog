@@ -69,7 +69,7 @@ func NewCommentServiceHandler(srv CommentServiceHandler, opts ...http1.HandleOpt
 			return
 		}
 
-		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -98,7 +98,7 @@ func NewCommentServiceHandler(srv CommentServiceHandler, opts ...http1.HandleOpt
 			return
 		}
 
-		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -127,7 +127,7 @@ func NewCommentServiceHandler(srv CommentServiceHandler, opts ...http1.HandleOpt
 			return
 		}
 
-		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -174,4 +174,69 @@ func NewCommentServiceHandler(srv CommentServiceHandler, opts ...http1.HandleOpt
 	}).Methods("GET")
 
 	return r
+}
+
+type CommentServiceHTTPClient interface {
+	CreateComment(ctx context.Context, req *CreateCommentRequest, opts ...http1.CallOption) (rsp *CreateCommentReply, err error)
+
+	DeleteComment(ctx context.Context, req *DeleteCommentRequest, opts ...http1.CallOption) (rsp *DeleteCommentReply, err error)
+
+	GetComment(ctx context.Context, req *GetCommentRequest, opts ...http1.CallOption) (rsp *GetCommentReply, err error)
+
+	ListComment(ctx context.Context, req *ListCommentRequest, opts ...http1.CallOption) (rsp *ListCommentReply, err error)
+
+	UpdateComment(ctx context.Context, req *UpdateCommentRequest, opts ...http1.CallOption) (rsp *UpdateCommentReply, err error)
+}
+
+type CommentServiceHTTPClientImpl struct {
+	cc *http1.Client
+}
+
+func NewCommentServiceHTTPClient(client *http1.Client) CommentServiceHTTPClient {
+	return &CommentServiceHTTPClientImpl{client}
+}
+
+func (c *CommentServiceHTTPClientImpl) CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...http1.CallOption) (out *CreateCommentReply, err error) {
+	path := binding.EncodePath("POST", "/v1/comment", in)
+	out = &CreateCommentReply{}
+
+	err = c.cc.Invoke(ctx, path, in, &out, http1.Method("POST"), http1.PathPattern("/v1/comment"))
+
+	return
+}
+
+func (c *CommentServiceHTTPClientImpl) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...http1.CallOption) (out *DeleteCommentReply, err error) {
+	path := binding.EncodePath("DELETE", "/v1/comment/{id}", in)
+	out = &DeleteCommentReply{}
+
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("DELETE"), http1.PathPattern("/v1/comment/{id}"))
+
+	return
+}
+
+func (c *CommentServiceHTTPClientImpl) GetComment(ctx context.Context, in *GetCommentRequest, opts ...http1.CallOption) (out *GetCommentReply, err error) {
+	path := binding.EncodePath("GET", "/v1/comment/{id}", in)
+	out = &GetCommentReply{}
+
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("GET"), http1.PathPattern("/v1/comment/{id}"))
+
+	return
+}
+
+func (c *CommentServiceHTTPClientImpl) ListComment(ctx context.Context, in *ListCommentRequest, opts ...http1.CallOption) (out *ListCommentReply, err error) {
+	path := binding.EncodePath("GET", "/v1/comment", in)
+	out = &ListCommentReply{}
+
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("GET"), http1.PathPattern("/v1/comment"))
+
+	return
+}
+
+func (c *CommentServiceHTTPClientImpl) UpdateComment(ctx context.Context, in *UpdateCommentRequest, opts ...http1.CallOption) (out *UpdateCommentReply, err error) {
+	path := binding.EncodePath("PUT", "/v1/comment/{id}", in)
+	out = &UpdateCommentReply{}
+
+	err = c.cc.Invoke(ctx, path, in, &out, http1.Method("PUT"), http1.PathPattern("/v1/comment/{id}"))
+
+	return
 }

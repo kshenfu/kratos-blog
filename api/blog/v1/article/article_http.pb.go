@@ -69,7 +69,7 @@ func NewArticleServiceHandler(srv ArticleServiceHandler, opts ...http1.HandleOpt
 			return
 		}
 
-		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -98,7 +98,7 @@ func NewArticleServiceHandler(srv ArticleServiceHandler, opts ...http1.HandleOpt
 			return
 		}
 
-		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -127,7 +127,7 @@ func NewArticleServiceHandler(srv ArticleServiceHandler, opts ...http1.HandleOpt
 			return
 		}
 
-		if err := binding.MapProto(&in, mux.Vars(r)); err != nil {
+		if err := binding.BindVars(mux.Vars(r), &in); err != nil {
 			h.Error(w, r, err)
 			return
 		}
@@ -174,4 +174,69 @@ func NewArticleServiceHandler(srv ArticleServiceHandler, opts ...http1.HandleOpt
 	}).Methods("GET")
 
 	return r
+}
+
+type ArticleServiceHTTPClient interface {
+	CreateArticle(ctx context.Context, req *CreateArticleRequest, opts ...http1.CallOption) (rsp *CreateArticleReply, err error)
+
+	DeleteArticle(ctx context.Context, req *DeleteArticleRequest, opts ...http1.CallOption) (rsp *DeleteArticleReply, err error)
+
+	GetArticle(ctx context.Context, req *GetArticleRequest, opts ...http1.CallOption) (rsp *GetArticleReply, err error)
+
+	ListArticle(ctx context.Context, req *ListArticleRequest, opts ...http1.CallOption) (rsp *ListArticleReply, err error)
+
+	UpdateArticle(ctx context.Context, req *UpdateArticleRequest, opts ...http1.CallOption) (rsp *UpdateArticleReply, err error)
+}
+
+type ArticleServiceHTTPClientImpl struct {
+	cc *http1.Client
+}
+
+func NewArticleServiceHTTPClient(client *http1.Client) ArticleServiceHTTPClient {
+	return &ArticleServiceHTTPClientImpl{client}
+}
+
+func (c *ArticleServiceHTTPClientImpl) CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...http1.CallOption) (out *CreateArticleReply, err error) {
+	path := binding.EncodePath("POST", "/v1/article", in)
+	out = &CreateArticleReply{}
+
+	err = c.cc.Invoke(ctx, path, in, &out, http1.Method("POST"), http1.PathPattern("/v1/article"))
+
+	return
+}
+
+func (c *ArticleServiceHTTPClientImpl) DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...http1.CallOption) (out *DeleteArticleReply, err error) {
+	path := binding.EncodePath("DELETE", "/v1/article/{id}", in)
+	out = &DeleteArticleReply{}
+
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("DELETE"), http1.PathPattern("/v1/article/{id}"))
+
+	return
+}
+
+func (c *ArticleServiceHTTPClientImpl) GetArticle(ctx context.Context, in *GetArticleRequest, opts ...http1.CallOption) (out *GetArticleReply, err error) {
+	path := binding.EncodePath("GET", "/v1/article/{id}", in)
+	out = &GetArticleReply{}
+
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("GET"), http1.PathPattern("/v1/article/{id}"))
+
+	return
+}
+
+func (c *ArticleServiceHTTPClientImpl) ListArticle(ctx context.Context, in *ListArticleRequest, opts ...http1.CallOption) (out *ListArticleReply, err error) {
+	path := binding.EncodePath("GET", "/v1/article", in)
+	out = &ListArticleReply{}
+
+	err = c.cc.Invoke(ctx, path, nil, &out, http1.Method("GET"), http1.PathPattern("/v1/article"))
+
+	return
+}
+
+func (c *ArticleServiceHTTPClientImpl) UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...http1.CallOption) (out *UpdateArticleReply, err error) {
+	path := binding.EncodePath("PUT", "/v1/article/{id}", in)
+	out = &UpdateArticleReply{}
+
+	err = c.cc.Invoke(ctx, path, in, &out, http1.Method("PUT"), http1.PathPattern("/v1/article/{id}"))
+
+	return
 }

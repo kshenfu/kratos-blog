@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -14,7 +15,7 @@ import (
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, article *service.ArticleService, comment *service.CommentService) *http.Server {
+func NewHTTPServer(c *conf.Server, logger log.Logger, article *service.ArticleService, comment *service.CommentService) *http.Server {
 	var opts []http.ServerOption
 	if c.Http.Network != "" {
 		opts = append(opts, http.Network(c.Http.Network))
@@ -30,7 +31,7 @@ func NewHTTPServer(c *conf.Server, article *service.ArticleService, comment *ser
 		middleware.Chain(
 			recovery.Recovery(),
 			tracing.Server(),
-			logging.Server(),
+			logging.Server(logger),
 		),
 	)
 	srv.HandlePrefix("/v1/article", v1article.NewArticleServiceHandler(article, m))

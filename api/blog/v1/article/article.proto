@@ -3,8 +3,8 @@ syntax = "proto3";
 package api.blog.v1;
 
 option go_package = "blog/api/blog/v1/article;v1";
-option java_multiple_files = true;
-option java_package = "api.blog.v1";
+//option java_multiple_files = true;
+//option java_package = "api.blog.v1";
 
 import "google/api/annotations.proto";
 import "validate/validate.proto";
