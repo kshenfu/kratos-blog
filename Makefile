@@ -74,7 +74,7 @@ swagger:
 
 .PHONY: all
 # generate all
-all: proto grpc http validate swagger
+all: clean ent proto grpc http validate swagger
 
 .PHONY: clean
 # clean generate code
