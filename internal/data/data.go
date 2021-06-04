@@ -28,7 +28,7 @@ type Data struct {
 
 // NewData .
 func NewData(conf *conf.Data, logger log.Logger) (*Data, error) {
-	log := log.NewHelper("data", logger)
+	helper := log.NewHelper(log.With(logger, "model", "data/article"))
 
 	// create database
 	defaultSource := fmt.Sprintf(conf.Database.Source, conf.Database.Driver)
@@ -41,9 +41,9 @@ func NewData(conf *conf.Data, logger log.Logger) (*Data, error) {
 	_, err = db.Exec(execArgs)
 	if err != nil {
 		// database exists
-		log.Infof("create database [%s] err: %s", conf.Database.Dbname, err.Error())
+		helper.Infof("create database [%s] err: %s", conf.Database.Dbname, err.Error())
 	} else {
-		log.Infof("create database [%s] success", conf.Database.Dbname)
+		helper.Infof("create database [%s] success", conf.Database.Dbname)
 	}
 
 	// create db client
@@ -53,13 +53,13 @@ func NewData(conf *conf.Data, logger log.Logger) (*Data, error) {
 		source,
 	)
 	if err != nil {
-		log.Errorf("failed opening connection to database: %v", err)
+		helper.Errorf("failed opening connection to database: %v", err)
 		return nil, err
 	}
 
 	// Run the auto migration tool.
 	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Errorf("failed creating schema resources: %v", err)
+		helper.Errorf("failed creating schema resources: %v", err)
 		return nil, err
 	}
 

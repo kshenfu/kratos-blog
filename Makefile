@@ -15,16 +15,15 @@ MAIN_PATH=$(shell find . -name main.go|sed "s/main.go//")
 .PHONY: init
 # init env
 init:
+	go get -u entgo.io/ent/cmd/ent
+	go get -u github.com/google/wire/cmd/wire
+	go get -u github.com/jteeuwen/go-bindata/...
 	go get -u github.com/go-kratos/kratos/cmd/kratos/v2
 	go get -u github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2
-	go get -u github.com/go-kratos/kratos/cmd/protoc-gen-go-errors/v2
 	go get -u google.golang.org/protobuf/cmd/protoc-gen-go
 	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	go get -u github.com/envoyproxy/protoc-gen-validate
-	go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2
-	go get -u entgo.io/ent/cmd/ent
-	go get -u github.com/jteeuwen/go-bindata/...
-	go get -u github.com/google/wire/cmd/wire
+	go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
 
 .PHONY: ent
 # generate ent
@@ -83,15 +82,20 @@ clean:
 	find . -name *.*.go -o -name *.swagger.json |xargs rm -rf;
 	cd internal/data/ent && ls |grep -v schema|xargs rm -rf
 
-.PHONY: run
-# run program
-run:
+.PHONY: debug
+# go run program
+debug:
 	cd $(MAIN_PATH) && go run .
 
 .PHONY: build
 # build
 build:
 	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
+
+.PHONY: run
+# run
+run: build
+	./bin/blog -conf ./configs/config.yaml
 
 .PHONY: test
 # test

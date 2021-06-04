@@ -5,6 +5,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -37,5 +39,12 @@ func (Article) Edges() []ent.Edge {
 		edge.To("comments", Comment.Type),
 		edge.From("tags", Tag.Type).
 			Ref("posts"),
+	}
+}
+
+// 用户实体的注解
+func (Article) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "article"},
 	}
 }
